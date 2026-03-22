@@ -20,7 +20,7 @@ export default function Orders() {
   const fetchOrders = async () => {
     try {
       const token = user.token.trim();
-      const { data } = await axios.get('https://shopkart-backend-tp4x.onrender.com/api/orders/myorders', {
+      const { data } = await axios.get('/api/orders/myorders', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setOrders(data);
@@ -40,13 +40,13 @@ export default function Orders() {
   const handleCancelOrder = async (orderId) => {
   if (!window.confirm('Are you sure you want to cancel this order?')) return;
   try {
-    await axios.put(`https://shopkart-backend-tp4x.onrender.com/api/orders/${orderId}/status`,
+    await axios.put(`/api/orders/${orderId}/status`,
       { status: 'Cancelled' },
       { headers: { Authorization: `Bearer ${user.token.trim()}` } }
     );
     alert('✅ Order cancelled!');
     // Refresh orders
-    const { data } = await axios.get('https://shopkart-backend-tp4x.onrender.com/api/orders/myorders', {
+    const { data } = await axios.get('/api/orders/myorders', {
       headers: { Authorization: `Bearer ${user.token.trim()}` },
     });
     setOrders(data);

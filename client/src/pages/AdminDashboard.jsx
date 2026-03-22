@@ -28,8 +28,8 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       const [ordersRes, productsRes] = await Promise.all([
-        axios.get('https://shopkart-backend-tp4x.onrender.com/api/orders', { headers }),
-        axios.get('https://shopkart-backend-tp4x.onrender.com/api/products'),
+        axios.get('/api/orders', { headers }),
+        axios.get('/api/products'),
       ]);
       setOrders(ordersRes.data);
       setProducts(productsRes.data);
@@ -43,7 +43,7 @@ export default function AdminDashboard() {
 
   const handleAddProduct = async () => {
     try {
-      await axios.post('https://shopkart-backend-tp4x.onrender.com/api/products', productForm, { headers });
+      await axios.post('/api/products', productForm, { headers });
       alert('✅ Product added!');
       setShowAddProduct(false);
       setProductForm({ name: '', description: '', price: '', image: '', category: '', stock: '' });
@@ -55,7 +55,7 @@ export default function AdminDashboard() {
 
   const handleEditProduct = async () => {
     try {
-      await axios.put(`https://shopkart-backend-tp4x.onrender.com/api/products/${editProduct._id}`, productForm, { headers });
+      await axios.put(`/api/products/${editProduct._id}`, productForm, { headers });
       alert('✅ Product updated!');
       setEditProduct(null);
       setProductForm({ name: '', description: '', price: '', image: '', category: '', stock: '' });
@@ -66,7 +66,7 @@ export default function AdminDashboard() {
   const handleDeleteProduct = async (id) => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
     try {
-      await axios.delete(`https://shopkart-backend-tp4x.onrender.com/api/products/${id}`, { headers });
+      await axios.delete(`/api/products/${id}`, { headers });
       alert('✅ Product deleted!');
       fetchAll();
     } catch (err) { alert('Failed to delete product'); }
@@ -74,7 +74,7 @@ export default function AdminDashboard() {
 
   const handleUpdateOrderStatus = async (orderId, status) => {
     try {
-      await axios.put(`https://shopkart-backend-tp4x.onrender.com/api/orders/${orderId}/status`, { status }, { headers });
+      await axios.put(`/api/orders/${orderId}/status`, { status }, { headers });
       fetchAll();
     } catch (err) { alert('Failed to update order status'); }
   };

@@ -22,7 +22,7 @@ export default function Home() {
       if (category && category !== 'All') url += `category=${category}`;
       const { data } = await axios.get(url);
 setProducts(data);
-const allProducts = await axios.get('https://shopkart-backend-tp4x.onrender.com/api/products');
+const allProducts = await axios.get('/api/products');
 const cats = ['All', ...new Set(allProducts.data.map(p => p.category))];
 setCategories(cats);
     } catch (err) {

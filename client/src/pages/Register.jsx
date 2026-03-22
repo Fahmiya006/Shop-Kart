@@ -34,7 +34,7 @@ export default function Register() {
 
     setLoading(true);
     try {
-      const { data } = await axios.post('https://shopkart-backend-tp4x.onrender.com/api/auth/register', { name, email, password });
+      const { data } = await axios.post('/api/auth/register', { name, email, password });
       login(data);
       toast.success('Account created successfully!');
       navigate('/');

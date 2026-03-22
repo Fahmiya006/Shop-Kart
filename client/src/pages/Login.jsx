@@ -24,7 +24,7 @@ export default function Login() {
     }
     setLoading(true);
     try {
-      const { data } = await axios.post('https://shopkart-backend-tp4x.onrender.com/api/auth/login', form);
+      const { data } = await axios.post('/api/auth/login', form);
       login(data);
       alert(`Welcome back, ${data.name}!`);
       navigate(from, { replace: true });
