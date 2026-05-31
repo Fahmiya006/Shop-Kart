@@ -13,24 +13,29 @@ export default function Home() {
   const [error, setError] = useState('');
   const [categories, setCategories] = useState(['All']);
 
-  const fetchProducts = async (search = '', category = '') => {
-    setLoading(true);
-    setError('');
-    try {
-      let url = '/api/products?';
-      if (search) url += `keyword=${search}&`;
-      if (category && category !== 'All') url += `category=${category}`;
-      const { data } = await axios.get(url);
-setProducts(data);
-const allProducts = await axios.get('/api/products');
-const cats = ['All', ...new Set(allProducts.data.map(p => p.category))];
-setCategories(cats);
-    } catch (err) {
-      setError('Failed to load products. Make sure the server is running.');
-      console.error(err);
-    }
-    setLoading(false);
-  };
+const fetchProducts = async (search = '', category = '') => {
+  setLoading(true);
+  setError('');
+
+  try {
+    let url = `${process.env.REACT_APP_API_URL}/api/products?`;
+
+    if (search) url += `keyword=${search}&`;
+    if (category && category !== 'All') url += `category=${category}`;
+
+    const { data } = await axios.get(url);
+
+    setProducts(data);
+
+    const cats = ['All', ...new Set(data.map((p) => p.category))];
+    setCategories(cats);
+  } catch (err) {
+    setError('Failed to load products.');
+    console.error(err);
+  }
+
+  setLoading(false);
+};
 
   useEffect(() => {
     fetchProducts(keyword, activeCategory);
