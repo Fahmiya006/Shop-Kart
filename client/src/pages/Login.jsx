@@ -24,7 +24,10 @@ export default function Login() {
     }
     setLoading(true);
     try {
-      const { data } = await axios.post('/api/auth/login', form);
+      const { data } = await axios.post(
+  `${process.env.REACT_APP_API_URL}/api/auth/login`,
+  form
+)
       login(data);
       alert(`Welcome back, ${data.name}!`);
       navigate(from, { replace: true });
