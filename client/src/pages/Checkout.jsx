@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../api';
 import toast from 'react-hot-toast';
 import './Checkout.css';
 
@@ -35,6 +36,10 @@ export default function Checkout() {
   };
 
   const handlePlaceOrder = async () => {
+    if (!user?.token) {
+      toast.error('Please sign in to place an order');
+      return;
+    }
     setLoading(true);
     try {
       const orderData = {
@@ -51,7 +56,7 @@ export default function Checkout() {
       };
       const token = user.token.trim();
 
-      await axios.post('api/orders', orderData, {
+      await axios.post(`${API_URL}/api/orders`, orderData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -76,12 +81,12 @@ export default function Checkout() {
 
         {/* Step Indicator */}
         <div className="steps">
-          <div className={`step ₹{step >= 1 ? 'active' : ''}`}>
+          <div className={`step ${step >= 1 ? 'active' : ''}`}>
             <span className="step-num">1</span>
             <span>Shipping</span>
           </div>
           <div className="step-line" />
-          <div className={`step ₹{step >= 2 ? 'active' : ''}`}>
+          <div className={`step ${step >= 2 ? 'active' : ''}`}>
             <span className="step-num">2</span>
             <span>Review</span>
           </div>

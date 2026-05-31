@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import API_URL from '../api';
 import './Orders.css';
 
 const STATUS_COLORS = {
@@ -19,8 +20,13 @@ export default function Orders() {
   useEffect(() => {
   const fetchOrders = async () => {
     try {
+      if (!user?.token) {
+        setOrders([]);
+        setLoading(false);
+        return;
+      }
       const token = user.token.trim();
-      const { data } = await axios.get('/api/orders/myorders', {
+      const { data } = await axios.get(`${API_URL}/api/orders/myorders`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setOrders(data);
@@ -39,14 +45,18 @@ export default function Orders() {
   };
   const handleCancelOrder = async (orderId) => {
   if (!window.confirm('Are you sure you want to cancel this order?')) return;
+  if (!user?.token) {
+    alert('Please sign in again.');
+    return;
+  }
   try {
-    await axios.put(`/api/orders/${orderId}/status`,
+    await axios.put(`${API_URL}/api/orders/${orderId}/status`,
       { status: 'Cancelled' },
       { headers: { Authorization: `Bearer ${user.token.trim()}` } }
     );
     alert('✅ Order cancelled!');
     // Refresh orders
-    const { data } = await axios.get('/api/orders/myorders', {
+    const { data } = await axios.get(`${API_URL}/api/orders/myorders`, {
       headers: { Authorization: `Bearer ${user.token.trim()}` },
     });
     setOrders(data);

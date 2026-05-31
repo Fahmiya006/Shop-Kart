@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../api';
 import './AdminDashboard.css';
 
 export default function AdminDashboard() {
@@ -17,7 +18,8 @@ export default function AdminDashboard() {
     name: '', description: '', price: '', image: '', category: '', stock: '',
   });
 
-  const headers = { Authorization: `Bearer ${user.token.trim()}` };
+  const token = user?.token?.trim();
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
   useEffect(() => {
     if (!user?.isAdmin) { navigate('/'); return; }
@@ -28,8 +30,8 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       const [ordersRes, productsRes] = await Promise.all([
-        axios.get('/api/orders', { headers }),
-        axios.get('/api/products'),
+        axios.get(`${API_URL}/api/orders`, { headers }),
+        axios.get(`${API_URL}/api/products`),
       ]);
       setOrders(Array.isArray(ordersRes.data) ? ordersRes.data : []);
       setProducts(Array.isArray(productsRes.data) ? productsRes.data : []);
@@ -43,7 +45,7 @@ export default function AdminDashboard() {
 
   const handleAddProduct = async () => {
     try {
-      await axios.post('/api/products', productForm, { headers });
+      await axios.post(`${API_URL}/api/products`, productForm, { headers });
       alert('✅ Product added!');
       setShowAddProduct(false);
       setProductForm({ name: '', description: '', price: '', image: '', category: '', stock: '' });
@@ -55,7 +57,7 @@ export default function AdminDashboard() {
 
   const handleEditProduct = async () => {
     try {
-      await axios.put(`/api/products/${editProduct._id}`, productForm, { headers });
+      await axios.put(`${API_URL}/api/products/${editProduct._id}`, productForm, { headers });
       alert('✅ Product updated!');
       setEditProduct(null);
       setProductForm({ name: '', description: '', price: '', image: '', category: '', stock: '' });
@@ -66,7 +68,7 @@ export default function AdminDashboard() {
   const handleDeleteProduct = async (id) => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
     try {
-      await axios.delete(`/api/products/${id}`, { headers });
+      await axios.delete(`${API_URL}/api/products/${id}`, { headers });
       alert('✅ Product deleted!');
       fetchAll();
     } catch (err) { alert('Failed to delete product'); }
@@ -74,7 +76,7 @@ export default function AdminDashboard() {
 
   const handleUpdateOrderStatus = async (orderId, status) => {
     try {
-      await axios.put(`/api/orders/${orderId}/status`, { status }, { headers });
+      await axios.put(`${API_URL}/api/orders/${orderId}/status`, { status }, { headers });
       fetchAll();
     } catch (err) { alert('Failed to update order status'); }
   };
@@ -140,7 +142,7 @@ export default function AdminDashboard() {
                 <div className="stat-icon">📦</div>
                 <div className="stat-info">
                   <p className="stat-label">Total Orders</p>
-                  <p className="stat-value">{safeorders.length}</p>
+                  <p className="stat-value">{orders.length}</p>
                 </div>
               </div>
               <div className="stat-card green">
@@ -187,7 +189,7 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {safeorders.slice(0, 5).map(order => (
+                  {orders.slice(0, 5).map(order => (
                     <tr key={order._id}>
                       <td className="order-id-cell">#{order._id.slice(-6).toUpperCase()}</td>
                       <td>
@@ -212,8 +214,8 @@ export default function AdminDashboard() {
         {/* ORDERS TAB */}
         {activeTab === 'orders' && (
           <div className="admin-section">
-            <h2>📦 All Orders ({safeorders.length})</h2>
-            {safeorders.length === 0 ? (
+            <h2>📦 All Orders ({orders.length})</h2>
+            {orders.length === 0 ? (
               <div className="empty-state">No orders yet</div>
             ) : (
               <div className="admin-table-wrap">
@@ -230,7 +232,7 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {safeorders.map(order => (
+                    {orders.map(order => (
                       <tr key={order._id}>
                         <td className="order-id-cell">#{order._id.slice(-6).toUpperCase()}</td>
                         <td>

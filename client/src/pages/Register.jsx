@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import API_URL from '../api';
 import toast from 'react-hot-toast';
 import './Auth.css';
 
@@ -34,10 +35,7 @@ export default function Register() {
 
     setLoading(true);
     try {
-      const { data } = await axios.post(
-  `${process.env.REACT_APP_API_URL}/api/auth/register`,
-  { name, email, password }
-);
+      const { data } = await axios.post(`${API_URL}/api/auth/register`, { name, email, password });
       login(data);
       toast.success('Account created successfully!');
       navigate('/');
