@@ -31,8 +31,8 @@ export default function AdminDashboard() {
         axios.get('/api/orders', { headers }),
         axios.get('/api/products'),
       ]);
-      setOrders(ordersRes.data);
-      setProducts(productsRes.data);
+      setOrders(Array.isArray(ordersRes.data) ? ordersRes.data : []);
+      setProducts(Array.isArray(productsRes.data) ? productsRes.data : []);
     } catch (err) { console.error(err); }
     setLoading(false);
   };
@@ -140,7 +140,7 @@ export default function AdminDashboard() {
                 <div className="stat-icon">📦</div>
                 <div className="stat-info">
                   <p className="stat-label">Total Orders</p>
-                  <p className="stat-value">{orders.length}</p>
+                  <p className="stat-value">{safeorders.length}</p>
                 </div>
               </div>
               <div className="stat-card green">
@@ -187,7 +187,7 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {orders.slice(0, 5).map(order => (
+                  {safeorders.slice(0, 5).map(order => (
                     <tr key={order._id}>
                       <td className="order-id-cell">#{order._id.slice(-6).toUpperCase()}</td>
                       <td>
@@ -212,8 +212,8 @@ export default function AdminDashboard() {
         {/* ORDERS TAB */}
         {activeTab === 'orders' && (
           <div className="admin-section">
-            <h2>📦 All Orders ({orders.length})</h2>
-            {orders.length === 0 ? (
+            <h2>📦 All Orders ({safeorders.length})</h2>
+            {safeorders.length === 0 ? (
               <div className="empty-state">No orders yet</div>
             ) : (
               <div className="admin-table-wrap">
@@ -230,7 +230,7 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {orders.map(order => (
+                    {safeorders.map(order => (
                       <tr key={order._id}>
                         <td className="order-id-cell">#{order._id.slice(-6).toUpperCase()}</td>
                         <td>
