@@ -34,7 +34,10 @@ export default function Register() {
 
     setLoading(true);
     try {
-      const { data } = await axios.post('/api/auth/register', { name, email, password });
+      const { data } = await axios.post(
+  `${process.env.REACT_APP_API_URL}/api/auth/register`,
+  { name, email, password }
+);
       login(data);
       toast.success('Account created successfully!');
       navigate('/');
